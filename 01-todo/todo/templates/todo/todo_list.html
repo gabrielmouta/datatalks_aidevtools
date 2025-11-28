@@ -1,0 +1,33 @@
+{% extends 'todo/base.html' %}
+
+{% block content %}
+  <p><a href="{% url 'todo:todo_create' %}">Create new todo</a></p>
+  <ul>
+  {% for todo in todos %}
+    <li class="todo">
+      <strong>{{ todo.title }}</strong> {% if todo.resolved %}(resolved){% endif %}
+      <div>{{ todo.description|linebreaksbr }}</div>
+      <div class="actions">
+        <a href="{% url 'todo:todo_update' todo.pk %}">Edit</a>
+        <a href="{% url 'todo:todo_delete' todo.pk %}">Delete</a>
+        {% if not todo.resolved %}<a href="{% url 'todo:todo_resolve' todo.pk %}">Mark resolved</a>{% endif %}
+      </div>
+    </li>
+  {% empty %}
+    <li>No todos yet.</li>
+  {% endfor %}
+  </ul>
+
+  {% if is_paginated %}
+    <div class="pagination">
+      {% if page_obj.has_previous %}
+        <a href="?page={{ page_obj.previous_page_number }}">previous</a>
+      {% endif %}
+      <span>Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}</span>
+      {% if page_obj.has_next %}
+        <a href="?page={{ page_obj.next_page_number }}">next</a>
+      {% endif %}
+    </div>
+  {% endif %}
+
+{% endblock %}
